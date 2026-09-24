@@ -3,7 +3,8 @@ package com.personal.loanofficer
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.material3.Text
+import androidx.compose.runtime.*
+import com.personal.loanofficer.ui.HomeScreen
 import com.personal.loanofficer.ui.LoginScreen
 import com.personal.loanofficer.ui.theme.PersonalLoanOfficerTheme
 
@@ -16,13 +17,43 @@ class MainActivity : ComponentActivity() {
 
             PersonalLoanOfficerTheme {
 
-                LoginScreen(
-                    onLoginSuccess = { name, mobile ->
+                var loggedIn by remember {
+                    mutableStateOf(false)
+                }
 
-                        // Home screen will be connected here later.
+                var executiveName by remember {
+                    mutableStateOf("")
+                }
 
-                    }
-                )
+                if (!loggedIn) {
+
+                    LoginScreen(
+                        onLoginSuccess = { name, mobile ->
+
+                            executiveName = name
+                            loggedIn = true
+
+                        }
+                    )
+
+                } else {
+
+                    HomeScreen(
+                        executiveName = executiveName,
+
+                        onCalculatorClick = {
+                            // Calculator will be connected next.
+                        },
+
+                        onCallbacksClick = {
+                            // Callback screen will be connected later.
+                        },
+
+                        onSettingsClick = {
+                            // Settings screen will be connected later.
+                        }
+                    )
+                }
             }
         }
     }
