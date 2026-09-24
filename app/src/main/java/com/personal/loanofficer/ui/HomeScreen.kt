@@ -11,9 +11,11 @@ fun HomeScreen(
     executiveName: String,
     onCalculatorClick: () -> Unit,
     onCustomerSearchClick: () -> Unit,
+    onCustomerListClick: () -> Unit,
     onCallbacksClick: () -> Unit,
     onSettingsClick: () -> Unit
-) {
+)
+ {
     Column(
         modifier = Modifier
             .fillMaxSize()
