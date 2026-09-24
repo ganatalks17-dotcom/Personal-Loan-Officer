@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.MaterialTheme
@@ -31,6 +32,14 @@ fun CalculatorScreen(
 
     var tenure by remember {
         mutableStateOf("48")
+    }
+
+    var customerType by remember {
+        mutableStateOf("Salaried")
+    }
+
+    var category by remember {
+        mutableStateOf("New")
     }
 
     Column(
@@ -92,9 +101,109 @@ fun CalculatorScreen(
             modifier = Modifier.padding(top = 6.dp)
         )
 
+        Text(
+            text = "Customer Type",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(top = 20.dp)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+
+            if (customerType == "Salaried") {
+                Button(
+                    onClick = {
+                        customerType = "Salaried"
+                    }
+                ) {
+                    Text("SALARIED")
+                }
+            } else {
+                OutlinedButton(
+                    onClick = {
+                        customerType = "Salaried"
+                    }
+                ) {
+                    Text("SALARIED")
+                }
+            }
+
+            if (customerType == "Self Employed") {
+                Button(
+                    onClick = {
+                        customerType = "Self Employed"
+                    }
+                ) {
+                    Text("SELF EMPLOYED")
+                }
+            } else {
+                OutlinedButton(
+                    onClick = {
+                        customerType = "Self Employed"
+                    }
+                ) {
+                    Text("SELF EMPLOYED")
+                }
+            }
+        }
+
+        Text(
+            text = "Loan Category",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(top = 20.dp)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+
+            if (category == "New") {
+                Button(
+                    onClick = {
+                        category = "New"
+                    }
+                ) {
+                    Text("NEW")
+                }
+            } else {
+                OutlinedButton(
+                    onClick = {
+                        category = "New"
+                    }
+                ) {
+                    Text("NEW")
+                }
+            }
+
+            if (category == "PLTB") {
+                Button(
+                    onClick = {
+                        category = "PLTB"
+                    }
+                ) {
+                    Text("PLTB")
+                }
+            } else {
+                OutlinedButton(
+                    onClick = {
+                        category = "PLTB"
+                    }
+                ) {
+                    Text("PLTB")
+                }
+            }
+        }
+
         Button(
             onClick = {
-                // EMI calculation will be added next.
+                // Exact rate lookup and EMI calculation will be added next.
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -103,18 +212,13 @@ fun CalculatorScreen(
             Text("CALCULATE EMI")
         }
 
-        Row(
+        Button(
+            onClick = onBack,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
-            horizontalArrangement = Arrangement.Center
+                .padding(top = 12.dp)
         ) {
-
-            Button(
-                onClick = onBack
-            ) {
-                Text("BACK")
-            }
+            Text("BACK")
         }
     }
 }
