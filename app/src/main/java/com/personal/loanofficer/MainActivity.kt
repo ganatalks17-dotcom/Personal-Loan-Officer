@@ -8,13 +8,12 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.personal.loanofficer.ui.theme.PersonalLoanOfficerTheme
 
 class MainActivity : ComponentActivity() {
 
@@ -22,38 +21,36 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         setContent {
-            PersonalLoanOfficerApp()
+            PersonalLoanOfficerTheme {
+                PersonalLoanOfficerApp()
+            }
         }
     }
 }
 
-@Composable
+@androidx.compose.runtime.Composable
 fun PersonalLoanOfficerApp() {
 
-    MaterialTheme {
+    Surface(
+        modifier = Modifier.fillMaxSize()
+    ) {
 
-        Surface(
-            modifier = Modifier.fillMaxSize()
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(24.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
 
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+            Text(
+                text = "PERSONAL LOAN OFFICER"
+            )
+
+            Button(
+                onClick = { }
             ) {
-
-                Text(
-                    text = "PERSONAL LOAN OFFICER",
-                    style = MaterialTheme.typography.headlineSmall
-                )
-
-                Button(
-                    onClick = { }
-                ) {
-                    Text("NORMAL EMI CALCULATOR")
-                }
+                Text("NORMAL EMI CALCULATOR")
             }
         }
     }
