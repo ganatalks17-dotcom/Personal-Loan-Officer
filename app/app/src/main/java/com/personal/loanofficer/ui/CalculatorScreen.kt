@@ -44,7 +44,32 @@ fun CalculatorScreen(
             text = "NORMAL EMI CALCULATOR",
             style = MaterialTheme.typography.headlineSmall
         )
+if (customerName.isNotEmpty()) {
 
+    Spacer(Modifier.height(12.dp))
+
+    Card(
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp)
+        ) {
+
+            Text(
+                text = "CUSTOMER",
+                style = MaterialTheme.typography.titleMedium
+            )
+
+            Text(
+                text = customerName
+            )
+
+            Text(
+                text = customerMobile
+            )
+        }
+    }
+}
         Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
