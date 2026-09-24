@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
 import com.personal.loanofficer.ui.CalculatorScreen
+import com.personal.loanofficer.ui.CustomerSearchScreen
 import com.personal.loanofficer.ui.HomeScreen
 import com.personal.loanofficer.ui.LoginScreen
 import com.personal.loanofficer.ui.theme.PersonalLoanOfficerTheme
@@ -34,6 +35,7 @@ class MainActivity : ComponentActivity() {
 
                     LoginScreen(
                         onLoginSuccess = { name, mobile ->
+
                             executiveName = name
                             loggedIn = true
                         }
@@ -52,9 +54,24 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
+                        "customerSearch" -> {
+
+                            CustomerSearchScreen(
+                                onCustomerSelected = { name, mobile ->
+
+                                    currentScreen = "calculator"
+                                },
+
+                                onBack = {
+                                    currentScreen = "home"
+                                }
+                            )
+                        }
+
                         else -> {
 
                             HomeScreen(
+
                                 executiveName = executiveName,
 
                                 onCalculatorClick = {
@@ -76,6 +93,3 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
-
-
