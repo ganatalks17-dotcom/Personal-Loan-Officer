@@ -114,8 +114,9 @@ fun CalculatorScreen(
         )
 
         Text(
-            text = "Presets: 33, 36, 39, 42, 48, 51, 63 months",
-            modifier = Modifier.padding(top = 6.dp)
+            text = "Tenure Presets",
+    style = MaterialTheme.typography.titleMedium,
+    modifier = Modifier.padding(top = 12.dp)
         )
 
         Text(
@@ -345,9 +346,75 @@ fun CalculatorScreen(
         if (resultText.isNotEmpty()) {
 
             Text(
-                text = resultText,
-                style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.padding(top = 20.dp)
+                Text(
+    text = "Tenure Presets",
+    style = MaterialTheme.typography.titleMedium,
+    modifier = Modifier.padding(top = 12.dp)
+)
+
+Row(
+    modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 8.dp),
+    horizontalArrangement = Arrangement.spacedBy(6.dp)
+) {
+
+    listOf(33, 36, 39, 42).forEach { preset ->
+
+        if (tenure == preset.toString()) {
+
+            Button(
+                onClick = {
+                    tenure = preset.toString()
+                }
+            ) {
+                Text(preset.toString())
+            }
+
+        } else {
+
+            OutlinedButton(
+                onClick = {
+                    tenure = preset.toString()
+                }
+            ) {
+                Text(preset.toString())
+            }
+        }
+    }
+}
+
+Row(
+    modifier = Modifier
+        .fillMaxWidth()
+        .padding(top = 6.dp),
+    horizontalArrangement = Arrangement.spacedBy(6.dp)
+) {
+
+    listOf(48, 51, 63).forEach { preset ->
+
+        if (tenure == preset.toString()) {
+
+            Button(
+                onClick = {
+                    tenure = preset.toString()
+                }
+            ) {
+                Text(preset.toString())
+            }
+
+        } else {
+
+            OutlinedButton(
+                onClick = {
+                    tenure = preset.toString()
+                }
+            ) {
+                Text(preset.toString())
+            }
+        }
+    }
+}
             )
         }
 
