@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
+import com.personal.loanofficer.ui.CalculatorScreen
 import com.personal.loanofficer.ui.HomeScreen
 import com.personal.loanofficer.ui.LoginScreen
 import com.personal.loanofficer.ui.theme.PersonalLoanOfficerTheme
@@ -25,36 +26,56 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf("")
                 }
 
+                var currentScreen by remember {
+                    mutableStateOf("home")
+                }
+
                 if (!loggedIn) {
 
                     LoginScreen(
                         onLoginSuccess = { name, mobile ->
-
                             executiveName = name
                             loggedIn = true
-
                         }
                     )
 
                 } else {
 
-                    HomeScreen(
-                        executiveName = executiveName,
+                    when (currentScreen) {
 
-                        onCalculatorClick = {
-                            // Calculator will be connected next.
-                        },
+                        "calculator" -> {
 
-                        onCallbacksClick = {
-                            // Callback screen will be connected later.
-                        },
-
-                        onSettingsClick = {
-                            // Settings screen will be connected later.
+                            CalculatorScreen(
+                                onBack = {
+                                    currentScreen = "home"
+                                }
+                            )
                         }
-                    )
+
+                        else -> {
+
+                            HomeScreen(
+                                executiveName = executiveName,
+
+                                onCalculatorClick = {
+                                    currentScreen = "calculator"
+                                },
+
+                                onCallbacksClick = {
+                                    // Callback screen will be added later.
+                                },
+
+                                onSettingsClick = {
+                                    // Settings screen will be added later.
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
     }
 }
+
+
+
