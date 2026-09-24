@@ -81,25 +81,34 @@ fun HomeScreen(
             modifier = Modifier.height(16.dp)
         )
 
-        Card(
-            modifier = Modifier.fillMaxWidth()
+        Card(Modifier.fillMaxWidth()) {
+
+    Column(
+        Modifier.padding(20.dp)
+    ) {
+
+        Text(
+            "Customer Request Search",
+            style = MaterialTheme.typography.titleLarge
+        )
+
+        Text(
+            "Search customer information before calculating.",
+            Modifier.padding(top = 8.dp)
+        )
+
+        Button(
+            onClick = {
+                // Customer search will be connected from MainActivity.
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
         ) {
-
-            Column(
-                modifier = Modifier.padding(20.dp)
-            ) {
-
-                Text(
-                    text = "Customer Request Search",
-                    style = MaterialTheme.typography.titleLarge
-                )
-
-                Text(
-                    text = "Search customer information before calculating.",
-                    modifier = Modifier.padding(top = 8.dp)
-                )
-            }
+            Text("SEARCH CUSTOMER")
         }
+    }
+}
 
         Spacer(
             modifier = Modifier.height(16.dp)
