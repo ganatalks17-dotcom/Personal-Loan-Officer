@@ -1,63 +1,35 @@
 package com.personal.loanofficer.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
 import com.personal.loanofficer.calculator.InsuranceOption
 import com.personal.loanofficer.calculator.calculateEmi
 import com.personal.loanofficer.calculator.calculateLoanCharges
 import com.personal.loanofficer.rate.getInterestRate
-import java.util.Locale
 
 @Composable
 fun CalculatorScreen(
     onBack: () -> Unit
 ) {
+    var amount by remember { mutableStateOf("") }
+    var tenure by remember { mutableStateOf("48") }
 
-    var amount by remember {
-        mutableStateOf("")
+    var customerType by remember { mutableStateOf("Salaried") }
+    var category by remember { mutableStateOf("New") }
+
+    var rateMode by remember { mutableStateOf("Automatic") }
+    var manualRate by remember { mutableStateOf("") }
+
+    var insuranceOption by remember {
+        mutableStateOf(InsuranceOption.WITHOUT)
     }
 
-    var tenure by remember {
-        mutableStateOf("48")
-    }
+    var customInsurance by remember { mutableStateOf("") }
 
-    var customerType by remember {
-        mutableStateOf("Salaried")
-    }
-
-    var category by remember {
-        mutableStateOf("New")
-    }
-
-    var insurance by remember {
-        mutableStateOf("Default")
-    }
-
-    var customInsurance by remember {
-        mutableStateOf("")
-    }
-
-    var resultText by remember {
-        mutableStateOf("")
-    }
+    var resultText by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -70,359 +42,289 @@ fun CalculatorScreen(
             style = MaterialTheme.typography.headlineSmall
         )
 
+        Spacer(Modifier.height(16.dp))
+
         OutlinedTextField(
             value = amount,
-            onValueChange = {
-                if (it.all { character -> character.isDigit() }) {
-                    amount = it
-                }
-            },
-            label = {
-                Text("Loan / Disbursement Amount")
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            ),
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp),
+            onValueChange = { amount = it },
+            label = { Text("Disbursement Amount") },
+            modifier = Modifier.fillMaxWidth(),
             singleLine = true
         )
 
-        Text(
-            text = "Allowed amount: ₹1,000 – ₹50,00,000",
-            modifier = Modifier.padding(top = 6.dp)
-        )
+        Spacer(Modifier.height(12.dp))
+
+        Text("Tenure (Months)")
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            listOf(33, 36, 39, 42).forEach { months ->
+                Button(
+                    onClick = { tenure = months.toString() },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(months.toString())
+                }
+            }
+        }
+
+        Spacer(Modifier.height(6.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            listOf(48, 51, 63).forEach { months ->
+                Button(
+                    onClick = { tenure = months.toString() },
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(months.toString())
+                }
+            }
+        }
 
         OutlinedTextField(
             value = tenure,
-            onValueChange = {
-                if (it.all { character -> character.isDigit() }) {
-                    tenure = it
-                }
-            },
-            label = {
-                Text("Tenure in Months")
-            },
-            keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Number
-            ),
+            onValueChange = { tenure = it },
+            label = { Text("Custom Tenure") },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = 10.dp),
             singleLine = true
         )
 
-        Text(
-            text = "Tenure Presets",
-    style = MaterialTheme.typography.titleMedium,
-    modifier = Modifier.padding(top = 12.dp)
-        )
+        Spacer(Modifier.height(16.dp))
 
-        Text(
-            text = "Customer Type",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 20.dp)
-        )
+        Text("Customer Type")
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-
-            if (customerType == "Salaried") {
-                Button(onClick = { customerType = "Salaried" }) {
-                    Text("SALARIED")
-                }
-            } else {
-                OutlinedButton(onClick = { customerType = "Salaried" }) {
-                    Text("SALARIED")
-                }
+            Button(
+                onClick = { customerType = "Salaried" },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Salaried")
             }
 
-            if (customerType == "Self Employed") {
-                Button(onClick = { customerType = "Self Employed" }) {
-                    Text("SELF EMPLOYED")
-                }
-            } else {
-                OutlinedButton(onClick = { customerType = "Self Employed" }) {
-                    Text("SELF EMPLOYED")
-                }
+            Button(
+                onClick = { customerType = "Self Employed" },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Self Employed")
             }
         }
 
-        Text(
-            text = "Loan Category",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 20.dp)
-        )
+        Spacer(Modifier.height(12.dp))
+
+        Text("Loan Category")
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-
-            if (category == "New") {
-                Button(onClick = { category = "New" }) {
-                    Text("NEW")
-                }
-            } else {
-                OutlinedButton(onClick = { category = "New" }) {
-                    Text("NEW")
-                }
+            Button(
+                onClick = { category = "New" },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("New")
             }
 
-            if (category == "PLTB") {
-                Button(onClick = { category = "PLTB" }) {
-                    Text("PLTB")
-                }
-            } else {
-                OutlinedButton(onClick = { category = "PLTB" }) {
-                    Text("PLTB")
-                }
+            Button(
+                onClick = { category = "PLTB" },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("PLTB")
             }
         }
 
-        Text(
-            text = "Insurance",
-            style = MaterialTheme.typography.titleMedium,
-            modifier = Modifier.padding(top = 20.dp)
-        )
+        Spacer(Modifier.height(16.dp))
+
+        Text("Interest Rate")
 
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 8.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-
-            if (insurance == "Without") {
-                Button(onClick = { insurance = "Without" }) {
-                    Text("WITHOUT")
-                }
-            } else {
-                OutlinedButton(onClick = { insurance = "Without" }) {
-                    Text("WITHOUT")
-                }
+            Button(
+                onClick = { rateMode = "Automatic" },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Automatic")
             }
 
-            if (insurance == "Default") {
-                Button(onClick = { insurance = "Default" }) {
-                    Text("DEFAULT")
-                }
-            } else {
-                OutlinedButton(onClick = { insurance = "Default" }) {
-                    Text("DEFAULT")
-                }
-            }
-
-            if (insurance == "Custom") {
-                Button(onClick = { insurance = "Custom" }) {
-                    Text("CUSTOM")
-                }
-            } else {
-                OutlinedButton(onClick = { insurance = "Custom" }) {
-                    Text("CUSTOM")
-                }
+            Button(
+                onClick = { rateMode = "Manual" },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Manual")
             }
         }
 
-        if (insurance == "Custom") {
+        if (rateMode == "Manual") {
 
             OutlinedTextField(
-                value = customInsurance,
-                onValueChange = {
-                    if (it.all { character -> character.isDigit() }) {
-                        customInsurance = it
-                    }
-                },
-                label = {
-                    Text("Custom Insurance Amount")
-                },
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Number
-                ),
+                value = manualRate,
+                onValueChange = { manualRate = it },
+                label = { Text("Annual Rate (%)") },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 12.dp),
+                    .padding(top = 10.dp),
                 singleLine = true
             )
         }
 
+        Spacer(Modifier.height(16.dp))
+
+        Text("Insurance")
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(6.dp)
+        ) {
+            Button(
+                onClick = {
+                    insuranceOption = InsuranceOption.WITHOUT
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Without")
+            }
+
+            Button(
+                onClick = {
+                    insuranceOption = InsuranceOption.DEFAULT
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Default")
+            }
+
+            Button(
+                onClick = {
+                    insuranceOption = InsuranceOption.CUSTOM
+                },
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Custom")
+            }
+        }
+
+        if (insuranceOption == InsuranceOption.CUSTOM) {
+
+            OutlinedTextField(
+                value = customInsurance,
+                onValueChange = { customInsurance = it },
+                label = { Text("Custom Insurance ₹") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 10.dp),
+                singleLine = true
+            )
+        }
+
+        Spacer(Modifier.height(20.dp))
+
         Button(
             onClick = {
 
-                val disbursement = amount.toDoubleOrNull()
+                val loanAmount = amount.toDoubleOrNull()
                 val months = tenure.toIntOrNull()
 
-                if (disbursement == null || months == null) {
-
-                    resultText = "Please enter a valid amount and tenure."
-
-                } else if (disbursement < 1000 ||
-                    disbursement > 5000000
+                if (loanAmount == null ||
+                    loanAmount < 1000 ||
+                    loanAmount > 5000000
                 ) {
-
-                    resultText =
-                        "Amount must be between ₹1,000 and ₹50,00,000."
-
-                } else if (months <= 0) {
-
-                    resultText =
-                        "Tenure must be greater than zero."
-
-                } else {
-
-                    val rate = getInterestRate(
-                        amount = disbursement.toInt(),
-                        customerType = customerType,
-                        category = category
-                    )
-
-                    if (rate == null) {
-
-                        resultText =
-                            "Interest rate is unavailable for this selection."
-
-                    } else {
-
-                        val insuranceOption =
-                            when (insurance) {
-
-                                "Without" ->
-                                    InsuranceOption.WITHOUT
-
-                                "Custom" ->
-                                    InsuranceOption.CUSTOM
-
-                                else ->
-                                    InsuranceOption.DEFAULT
-                            }
-
-                        val customAmount =
-                            customInsurance.toDoubleOrNull() ?: 0.0
-
-                        val charges = calculateLoanCharges(
-                            disbursementAmount = disbursement,
-                            insuranceOption = insuranceOption,
-                            customInsurance = customAmount
-                        )
-
-                        val emiResult = calculateEmi(
-                            principal = charges.totalFinancedAmount,
-                            annualRate = rate,
-                            tenureMonths = months
-                        )
-
-                        resultText = String.format(
-                            Locale.US,
-                            "Interest Rate: %.2f%%\n" +
-                                "Processing Fee: ₹%.2f\n" +
-                                "Insurance: ₹%.2f\n" +
-                                "Total Financed Amount: ₹%.2f\n" +
-                                "Monthly EMI: ₹%.2f\n" +
-                                "Total Interest: ₹%.2f",
-                            rate,
-                            charges.processingFee,
-                            charges.insurance,
-                            charges.totalFinancedAmount,
-                            emiResult.emi,
-                            emiResult.totalInterest
-                        )
-                    }
+                    resultText = "Enter amount between ₹1,000 and ₹50,00,000."
+                    return@Button
                 }
+
+                if (months == null || months <= 0) {
+                    resultText = "Enter a valid tenure."
+                    return@Button
+                }
+
+                val annualRate =
+                    if (rateMode == "Automatic") {
+                        getInterestRate(
+                            amount = loanAmount.toInt(),
+                            customerType = customerType,
+                            category = category
+                        )
+                    } else {
+                        manualRate.toDoubleOrNull()
+                    }
+
+                if (annualRate == null) {
+                    resultText =
+                        "Interest rate is not available for this amount and selection."
+                    return@Button
+                }
+
+                val charges = try {
+                    calculateLoanCharges(
+                        disbursementAmount = loanAmount,
+                        insuranceOption = insuranceOption,
+                        customInsurance =
+                            customInsurance.toDoubleOrNull() ?: 0.0
+                    )
+                } catch (e: Exception) {
+                    resultText = e.message ?: "Invalid charges."
+                    return@Button
+                }
+
+                val emiResult = calculateEmi(
+                    principal = charges.totalFinancedAmount,
+                    annualRate = annualRate,
+                    tenureMonths = months
+                )
+
+                resultText = """
+                    Disbursement: ₹%.2f
+                    Interest Rate: %.2f%%
+                    Processing Fee: ₹%.2f
+                    Insurance: ₹%.2f
+                    Total Financed: ₹%.2f
+                    
+                    Monthly EMI: ₹%.2f
+                    Total Interest: ₹%.2f
+                """.trimIndent().format(
+                    charges.disbursementAmount,
+                    annualRate,
+                    charges.processingFee,
+                    charges.insurance,
+                    charges.totalFinancedAmount,
+                    emiResult.emi,
+                    emiResult.totalInterest
+                )
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 24.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text("CALCULATE EMI")
         }
 
+        Spacer(Modifier.height(16.dp))
+
         if (resultText.isNotEmpty()) {
-
-            Text(
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 Text(
-    text = "Tenure Presets",
-    style = MaterialTheme.typography.titleMedium,
-    modifier = Modifier.padding(top = 12.dp)
-)
-
-Row(
-    modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 8.dp),
-    horizontalArrangement = Arrangement.spacedBy(6.dp)
-) {
-
-    listOf(33, 36, 39, 42).forEach { preset ->
-
-        if (tenure == preset.toString()) {
-
-            Button(
-                onClick = {
-                    tenure = preset.toString()
-                }
-            ) {
-                Text(preset.toString())
-            }
-
-        } else {
-
-            OutlinedButton(
-                onClick = {
-                    tenure = preset.toString()
-                }
-            ) {
-                Text(preset.toString())
+                    text = resultText,
+                    modifier = Modifier.padding(16.dp)
+                )
             }
         }
-    }
-}
 
-Row(
-    modifier = Modifier
-        .fillMaxWidth()
-        .padding(top = 6.dp),
-    horizontalArrangement = Arrangement.spacedBy(6.dp)
-) {
+        Spacer(Modifier.height(12.dp))
 
-    listOf(48, 51, 63).forEach { preset ->
-
-        if (tenure == preset.toString()) {
-
-            Button(
-                onClick = {
-                    tenure = preset.toString()
-                }
-            ) {
-                Text(preset.toString())
-            }
-
-        } else {
-
-            OutlinedButton(
-                onClick = {
-                    tenure = preset.toString()
-                }
-            ) {
-                Text(preset.toString())
-            }
-        }
-    }
-}
-            )
-        }
-
-        Button(
+        OutlinedButton(
             onClick = onBack,
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 12.dp)
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text("BACK")
         }
