@@ -1,89 +1,127 @@
-package com.personal.loanofficer.ui
+package com.personal.loanofficer
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
 import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import com.personal.loanofficer.data.CustomerRepository
+import com.personal.loanofficer.data.database.AppDatabase
+import com.personal.loanofficer.ui.CalculatorScreen
+import com.personal.loanofficer.ui.CustomerSearchScreen
+import com.personal.loanofficer.ui.HomeScreen
+import com.personal.loanofficer.ui.LoginScreen
+import com.personal.loanofficer.ui.theme.PersonalLoanOfficerTheme
+import kotlinx.coroutines.launch
 
-@Composable
-fun CustomerSearchScreen(
-    onCustomerSelected: (String, String) -> Unit,
-    onBack: () -> Unit
-) {
-    var customerName by remember { mutableStateOf("") }
-    var mobileNumber by remember { mutableStateOf("") }
+class MainActivity : ComponentActivity() {
 
-    val isValid =
-        customerName.trim().isNotEmpty() &&
-        mobileNumber.length == 10
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(20.dp)
-    ) {
+        val database = AppDatabase.getDatabase(this)
+        val customerRepository = CustomerRepository(database.customerDao())
 
-        Text(
-            text = "CUSTOMER REQUEST SEARCH",
-            style = MaterialTheme.typography.headlineSmall
-        )
+        setContent {
 
-        Spacer(Modifier.height(20.dp))
+            PersonalLoanOfficerTheme {
 
-        OutlinedTextField(
-            value = customerName,
-            onValueChange = {
-                customerName = it
-            },
-            label = {
-                Text("Customer Name")
-            },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
+                val scope = rememberCoroutineScope()
 
-        Spacer(Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = mobileNumber,
-            onValueChange = {
-                if (
-                    it.all { character -> character.isDigit() } &&
-                    it.length <= 10
-                ) {
-                    mobileNumber = it
+                var loggedIn by remember {
+                    mutableStateOf(false)
                 }
-            },
-            label = {
-                Text("Customer Mobile Number")
-            },
-            modifier = Modifier.fillMaxWidth(),
-            singleLine = true
-        )
 
-        Spacer(Modifier.height(24.dp))
+                var executiveName by remember {
+                    mutableStateOf("")
+                }
 
-        Button(
-            onClick = {
-                onCustomerSelected(
-                    customerName.trim(),
-                    mobileNumber
-                )
-            },
-            enabled = isValid,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("SELECT CUSTOMER")
-        }
+                var currentScreen by remember {
+                    mutableStateOf("home")
+                }
 
-        Spacer(Modifier.height(12.dp))
+                var selectedCustomerName by remember {
+                    mutableStateOf("")
+                }
 
-        OutlinedButton(
-            onClick = onBack,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("BACK")
+                var selectedCustomerMobile by remember {
+                    mutableStateOf("")
+                }
+
+                if (!loggedIn) {
+
+                    LoginScreen(
+                        onLoginSuccess = { name, mobile ->
+
+                            executiveName = name
+                            loggedIn = true
+                        }
+                    )
+
+                } else {
+
+                    when (currentScreen) {
+
+                        "calculator" -> {
+
+                            CalculatorScreen(
+                                customerName = selectedCustomerName,
+                                customerMobile = selectedCustomerMobile,
+                                onBack = {
+                                    currentScreen = "home"
+                                }
+                            )
+                        }
+
+                        "customerSearch" -> {
+
+                            CustomerSearchScreen(
+
+                                onCustomerSelected = { name, mobile ->
+
+                                    scope.launch {
+
+                                        customerRepository.saveCustomer(
+                                            customerName = name,
+                                            mobileNumber = mobile
+                                        )
+                                    }
+
+                                    selectedCustomerName = name
+                                    selectedCustomerMobile = mobile
+
+                                    currentScreen = "calculator"
+                                },
+
+                                onBack = {
+                                    currentScreen = "home"
+                                }
+                            )
+                        }
+
+                        else -> {
+
+                            HomeScreen(
+
+                                executiveName = executiveName,
+
+                                onCalculatorClick = {
+                                    currentScreen = "calculator"
+                                },
+
+                                onCustomerSearchClick = {
+                                    currentScreen = "customerSearch"
+                                },
+
+                                onCallbacksClick = {
+                                },
+
+                                onSettingsClick = {
+                                }
+                            )
+                        }
+                    }
+                }
+            }
         }
     }
 }
