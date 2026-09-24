@@ -1,17 +1,7 @@
 package com.personal.loanofficer.ui
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.Card
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,10 +10,10 @@ import androidx.compose.ui.unit.dp
 fun HomeScreen(
     executiveName: String,
     onCalculatorClick: () -> Unit,
+    onCustomerSearchClick: () -> Unit,
     onCallbacksClick: () -> Unit,
     onSettingsClick: () -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -31,39 +21,34 @@ fun HomeScreen(
     ) {
 
         Text(
-            text = "PERSONAL LOAN OFFICER",
+            "PERSONAL LOAN OFFICER",
             style = MaterialTheme.typography.headlineSmall
         )
 
-        Spacer(
-            modifier = Modifier.height(8.dp)
-        )
+        Spacer(Modifier.height(8.dp))
 
         Text(
-            text = "Welcome, $executiveName",
+            "Welcome, $executiveName",
             style = MaterialTheme.typography.titleMedium
         )
 
-        Spacer(
-            modifier = Modifier.height(24.dp)
-        )
+        Spacer(Modifier.height(24.dp))
 
         Card(
-            modifier = Modifier.fillMaxWidth()
+            Modifier.fillMaxWidth()
         ) {
-
             Column(
-                modifier = Modifier.padding(20.dp)
+                Modifier.padding(20.dp)
             ) {
 
                 Text(
-                    text = "Normal EMI Calculator",
+                    "Normal EMI Calculator",
                     style = MaterialTheme.typography.titleLarge
                 )
 
                 Text(
-                    text = "Calculate monthly EMI and loan details.",
-                    modifier = Modifier.padding(top = 8.dp)
+                    "Calculate monthly EMI and loan details.",
+                    Modifier.padding(top = 8.dp)
                 )
 
                 Button(
@@ -77,59 +62,53 @@ fun HomeScreen(
             }
         }
 
-        Spacer(
-            modifier = Modifier.height(16.dp)
-        )
-
-        Card(Modifier.fillMaxWidth()) {
-
-    Column(
-        Modifier.padding(20.dp)
-    ) {
-
-        Text(
-            "Customer Request Search",
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        Text(
-            "Search customer information before calculating.",
-            Modifier.padding(top = 8.dp)
-        )
-
-        Button(
-            onClick = {
-                // Customer search will be connected from MainActivity.
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 16.dp)
-        ) {
-            Text("SEARCH CUSTOMER")
-        }
-    }
-}
-
-        Spacer(
-            modifier = Modifier.height(16.dp)
-        )
+        Spacer(Modifier.height(16.dp))
 
         Card(
-            modifier = Modifier.fillMaxWidth()
+            Modifier.fillMaxWidth()
         ) {
-
             Column(
-                modifier = Modifier.padding(20.dp)
+                Modifier.padding(20.dp)
             ) {
 
                 Text(
-                    text = "Callback Records",
+                    "Customer Request Search",
                     style = MaterialTheme.typography.titleLarge
                 )
 
                 Text(
-                    text = "View and manage customer callbacks.",
-                    modifier = Modifier.padding(top = 8.dp)
+                    "Search customer information before calculating.",
+                    Modifier.padding(top = 8.dp)
+                )
+
+                Button(
+                    onClick = onCustomerSearchClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                ) {
+                    Text("SEARCH CUSTOMER")
+                }
+            }
+        }
+
+        Spacer(Modifier.height(16.dp))
+
+        Card(
+            Modifier.fillMaxWidth()
+        ) {
+            Column(
+                Modifier.padding(20.dp)
+            ) {
+
+                Text(
+                    "Callback Records",
+                    style = MaterialTheme.typography.titleLarge
+                )
+
+                Text(
+                    "View and manage customer callbacks.",
+                    Modifier.padding(top = 8.dp)
                 )
 
                 Button(
@@ -143,12 +122,10 @@ fun HomeScreen(
             }
         }
 
-        Spacer(
-            modifier = Modifier.weight(1f)
-        )
+        Spacer(Modifier.weight(1f))
 
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
