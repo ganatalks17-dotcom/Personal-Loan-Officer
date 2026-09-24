@@ -12,7 +12,10 @@ import com.personal.loanofficer.rate.getInterestRate
 
 @Composable
 fun CalculatorScreen(
+    customerName: String = "",
+    customerMobile: String = "",
     onBack: () -> Unit
+)
 ) {
     var amount by remember { mutableStateOf("") }
     var tenure by remember { mutableStateOf("48") }
