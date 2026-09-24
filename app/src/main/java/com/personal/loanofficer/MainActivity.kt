@@ -31,11 +31,18 @@ class MainActivity : ComponentActivity() {
                     mutableStateOf("home")
                 }
 
+                var selectedCustomerName by remember {
+                    mutableStateOf("")
+                }
+
+                var selectedCustomerMobile by remember {
+                    mutableStateOf("")
+                }
+
                 if (!loggedIn) {
 
                     LoginScreen(
                         onLoginSuccess = { name, mobile ->
-
                             executiveName = name
                             loggedIn = true
                         }
@@ -48,6 +55,8 @@ class MainActivity : ComponentActivity() {
                         "calculator" -> {
 
                             CalculatorScreen(
+                                customerName = selectedCustomerName,
+                                customerMobile = selectedCustomerMobile,
                                 onBack = {
                                     currentScreen = "home"
                                 }
@@ -57,7 +66,11 @@ class MainActivity : ComponentActivity() {
                         "customerSearch" -> {
 
                             CustomerSearchScreen(
+
                                 onCustomerSelected = { name, mobile ->
+
+                                    selectedCustomerName = name
+                                    selectedCustomerMobile = mobile
 
                                     currentScreen = "calculator"
                                 },
@@ -72,22 +85,20 @@ class MainActivity : ComponentActivity() {
 
                             HomeScreen(
 
-    executiveName = executiveName,
+                                executiveName = executiveName,
 
-    onCalculatorClick = {
-        currentScreen = "calculator"
-    },
+                                onCalculatorClick = {
+                                    currentScreen = "calculator"
+                                },
 
-    onCustomerSearchClick = {
-        currentScreen = "customerSearch"
-    },
+                                onCustomerSearchClick = {
+                                    currentScreen = "customerSearch"
+                                },
 
-    onCallbacksClick = {
-                                    // Callback screen will be added later.
+                                onCallbacksClick = {
                                 },
 
                                 onSettingsClick = {
-                                    // Settings screen will be added later.
                                 }
                             )
                         }
