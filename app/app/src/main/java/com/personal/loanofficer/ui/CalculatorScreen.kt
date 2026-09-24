@@ -20,6 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.unit.dp
+import com.personal.loanofficer.calculator.InsuranceOption
+import com.personal.loanofficer.calculator.calculateEmi
+import com.personal.loanofficer.calculator.calculateLoanCharges
+import com.personal.loanofficer.rate.getInterestRate
+import java.util.Locale
 
 @Composable
 fun CalculatorScreen(
@@ -47,6 +52,10 @@ fun CalculatorScreen(
     }
 
     var customInsurance by remember {
+        mutableStateOf("")
+    }
+
+    var resultText by remember {
         mutableStateOf("")
     }
 
@@ -123,37 +132,21 @@ fun CalculatorScreen(
         ) {
 
             if (customerType == "Salaried") {
-                Button(
-                    onClick = {
-                        customerType = "Salaried"
-                    }
-                ) {
+                Button(onClick = { customerType = "Salaried" }) {
                     Text("SALARIED")
                 }
             } else {
-                OutlinedButton(
-                    onClick = {
-                        customerType = "Salaried"
-                    }
-                ) {
+                OutlinedButton(onClick = { customerType = "Salaried" }) {
                     Text("SALARIED")
                 }
             }
 
             if (customerType == "Self Employed") {
-                Button(
-                    onClick = {
-                        customerType = "Self Employed"
-                    }
-                ) {
+                Button(onClick = { customerType = "Self Employed" }) {
                     Text("SELF EMPLOYED")
                 }
             } else {
-                OutlinedButton(
-                    onClick = {
-                        customerType = "Self Employed"
-                    }
-                ) {
+                OutlinedButton(onClick = { customerType = "Self Employed" }) {
                     Text("SELF EMPLOYED")
                 }
             }
@@ -173,37 +166,21 @@ fun CalculatorScreen(
         ) {
 
             if (category == "New") {
-                Button(
-                    onClick = {
-                        category = "New"
-                    }
-                ) {
+                Button(onClick = { category = "New" }) {
                     Text("NEW")
                 }
             } else {
-                OutlinedButton(
-                    onClick = {
-                        category = "New"
-                    }
-                ) {
+                OutlinedButton(onClick = { category = "New" }) {
                     Text("NEW")
                 }
             }
 
             if (category == "PLTB") {
-                Button(
-                    onClick = {
-                        category = "PLTB"
-                    }
-                ) {
+                Button(onClick = { category = "PLTB" }) {
                     Text("PLTB")
                 }
             } else {
-                OutlinedButton(
-                    onClick = {
-                        category = "PLTB"
-                    }
-                ) {
+                OutlinedButton(onClick = { category = "PLTB" }) {
                     Text("PLTB")
                 }
             }
@@ -223,55 +200,31 @@ fun CalculatorScreen(
         ) {
 
             if (insurance == "Without") {
-                Button(
-                    onClick = {
-                        insurance = "Without"
-                    }
-                ) {
+                Button(onClick = { insurance = "Without" }) {
                     Text("WITHOUT")
                 }
             } else {
-                OutlinedButton(
-                    onClick = {
-                        insurance = "Without"
-                    }
-                ) {
+                OutlinedButton(onClick = { insurance = "Without" }) {
                     Text("WITHOUT")
                 }
             }
 
             if (insurance == "Default") {
-                Button(
-                    onClick = {
-                        insurance = "Default"
-                    }
-                ) {
+                Button(onClick = { insurance = "Default" }) {
                     Text("DEFAULT")
                 }
             } else {
-                OutlinedButton(
-                    onClick = {
-                        insurance = "Default"
-                    }
-                ) {
+                OutlinedButton(onClick = { insurance = "Default" }) {
                     Text("DEFAULT")
                 }
             }
 
             if (insurance == "Custom") {
-                Button(
-                    onClick = {
-                        insurance = "Custom"
-                    }
-                ) {
+                Button(onClick = { insurance = "Custom" }) {
                     Text("CUSTOM")
                 }
             } else {
-                OutlinedButton(
-                    onClick = {
-                        insurance = "Custom"
-                    }
-                ) {
+                OutlinedButton(onClick = { insurance = "Custom" }) {
                     Text("CUSTOM")
                 }
             }
@@ -301,13 +254,101 @@ fun CalculatorScreen(
 
         Button(
             onClick = {
-                // Charges and EMI calculation will be connected next.
+
+                val disbursement = amount.toDoubleOrNull()
+                val months = tenure.toIntOrNull()
+
+                if (disbursement == null || months == null) {
+
+                    resultText = "Please enter a valid amount and tenure."
+
+                } else if (disbursement < 1000 ||
+                    disbursement > 5000000
+                ) {
+
+                    resultText =
+                        "Amount must be between ₹1,000 and ₹50,00,000."
+
+                } else if (months <= 0) {
+
+                    resultText =
+                        "Tenure must be greater than zero."
+
+                } else {
+
+                    val rate = getInterestRate(
+                        amount = disbursement.toInt(),
+                        customerType = customerType,
+                        category = category
+                    )
+
+                    if (rate == null) {
+
+                        resultText =
+                            "Interest rate is unavailable for this selection."
+
+                    } else {
+
+                        val insuranceOption =
+                            when (insurance) {
+
+                                "Without" ->
+                                    InsuranceOption.WITHOUT
+
+                                "Custom" ->
+                                    InsuranceOption.CUSTOM
+
+                                else ->
+                                    InsuranceOption.DEFAULT
+                            }
+
+                        val customAmount =
+                            customInsurance.toDoubleOrNull() ?: 0.0
+
+                        val charges = calculateLoanCharges(
+                            disbursementAmount = disbursement,
+                            insuranceOption = insuranceOption,
+                            customInsurance = customAmount
+                        )
+
+                        val emiResult = calculateEmi(
+                            principal = charges.totalFinancedAmount,
+                            annualRate = rate,
+                            tenureMonths = months
+                        )
+
+                        resultText = String.format(
+                            Locale.US,
+                            "Interest Rate: %.2f%%\n" +
+                                "Processing Fee: ₹%.2f\n" +
+                                "Insurance: ₹%.2f\n" +
+                                "Total Financed Amount: ₹%.2f\n" +
+                                "Monthly EMI: ₹%.2f\n" +
+                                "Total Interest: ₹%.2f",
+                            rate,
+                            charges.processingFee,
+                            charges.insurance,
+                            charges.totalFinancedAmount,
+                            emiResult.emi,
+                            emiResult.totalInterest
+                        )
+                    }
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 24.dp)
         ) {
             Text("CALCULATE EMI")
+        }
+
+        if (resultText.isNotEmpty()) {
+
+            Text(
+                text = resultText,
+                style = MaterialTheme.typography.bodyLarge,
+                modifier = Modifier.padding(top = 20.dp)
+            )
         }
 
         Button(
