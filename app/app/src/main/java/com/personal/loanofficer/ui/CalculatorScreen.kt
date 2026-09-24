@@ -42,6 +42,14 @@ fun CalculatorScreen(
         mutableStateOf("New")
     }
 
+    var insurance by remember {
+        mutableStateOf("Default")
+    }
+
+    var customInsurance by remember {
+        mutableStateOf("")
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -201,9 +209,99 @@ fun CalculatorScreen(
             }
         }
 
+        Text(
+            text = "Insurance",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier.padding(top = 20.dp)
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+
+            if (insurance == "Without") {
+                Button(
+                    onClick = {
+                        insurance = "Without"
+                    }
+                ) {
+                    Text("WITHOUT")
+                }
+            } else {
+                OutlinedButton(
+                    onClick = {
+                        insurance = "Without"
+                    }
+                ) {
+                    Text("WITHOUT")
+                }
+            }
+
+            if (insurance == "Default") {
+                Button(
+                    onClick = {
+                        insurance = "Default"
+                    }
+                ) {
+                    Text("DEFAULT")
+                }
+            } else {
+                OutlinedButton(
+                    onClick = {
+                        insurance = "Default"
+                    }
+                ) {
+                    Text("DEFAULT")
+                }
+            }
+
+            if (insurance == "Custom") {
+                Button(
+                    onClick = {
+                        insurance = "Custom"
+                    }
+                ) {
+                    Text("CUSTOM")
+                }
+            } else {
+                OutlinedButton(
+                    onClick = {
+                        insurance = "Custom"
+                    }
+                ) {
+                    Text("CUSTOM")
+                }
+            }
+        }
+
+        if (insurance == "Custom") {
+
+            OutlinedTextField(
+                value = customInsurance,
+                onValueChange = {
+                    if (it.all { character -> character.isDigit() }) {
+                        customInsurance = it
+                    }
+                },
+                label = {
+                    Text("Custom Insurance Amount")
+                },
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 12.dp),
+                singleLine = true
+            )
+        }
+
         Button(
             onClick = {
-                // Exact rate lookup and EMI calculation will be added next.
+                // Charges and EMI calculation will be connected next.
             },
             modifier = Modifier
                 .fillMaxWidth()
