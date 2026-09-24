@@ -72,13 +72,17 @@ class MainActivity : ComponentActivity() {
 
                             HomeScreen(
 
-                                executiveName = executiveName,
+    executiveName = executiveName,
 
-                                onCalculatorClick = {
-                                    currentScreen = "calculator"
-                                },
+    onCalculatorClick = {
+        currentScreen = "calculator"
+    },
 
-                                onCallbacksClick = {
+    onCustomerSearchClick = {
+        currentScreen = "customerSearch"
+    },
+
+    onCallbacksClick = {
                                     // Callback screen will be added later.
                                 },
 
